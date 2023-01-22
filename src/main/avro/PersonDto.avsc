@@ -1,0 +1,9 @@
+{
+  "type": "record",
+  "name": "PersonDTO",
+  "namespace": "com.luiz.kotlinkafkadocker.entity",
+  "fields": [
+    {"name": "name", "type": "string"},
+    {"name": "lastname", "type": "string"}
+  ]
+}

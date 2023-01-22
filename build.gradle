@@ -1,11 +1,18 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask
+//import com.github.davidmc24.gradle.plugin.avro.GenerateAvroSchemaTask
+//import com.github.davidmc24.gradle.plugin.avro.GenerateAvroProtocolTask
+
 
 plugins {
 	id 'org.springframework.boot' version '2.7.8'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id 'org.jetbrains.kotlin.jvm' version '1.6.21'
 	id 'org.jetbrains.kotlin.plugin.spring' version '1.6.21'
+	id 'com.github.davidmc24.gradle.plugin.avro' version '1.2.0'
 }
+
+apply plugin: "com.github.davidmc24.gradle.plugin.avro-base"
 
 group = 'com.luiz'
 version = '0.0.1-SNAPSHOT'
@@ -13,6 +20,9 @@ sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
+	maven {
+		url "https://packages.confluent.io/maven"
+	}
 }
 
 dependencies {
@@ -23,6 +33,11 @@ dependencies {
 	implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
 	implementation 'org.springframework.kafka:spring-kafka'
+
+	implementation 'org.apache.avro:avro:1.11.1'
+
+	implementation 'io.confluent:kafka-avro-serializer:5.3.0'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
@@ -33,6 +48,16 @@ tasks.withType(KotlinCompile) {
 		freeCompilerArgs = ['-Xjsr305=strict']
 		jvmTarget = '11'
 	}
+}
+
+def generateAvro = tasks.register("generateAvro", GenerateAvroJavaTask) {
+	source("src/avro")
+//	outputDir = file("dest/avro")
+	outputDir = file("scr/kotlin")
+}
+
+tasks.named("compileJava").configure {
+	source(generateAvro)
 }
 
 tasks.named('test') {
