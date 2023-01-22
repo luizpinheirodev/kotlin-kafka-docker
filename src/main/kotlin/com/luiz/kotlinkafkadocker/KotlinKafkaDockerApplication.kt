@@ -12,7 +12,9 @@ class KotlinKafkaDockerApplication(
 	val personProducerImpl: PersonProducerImpl
 ): ApplicationRunner {
 	override fun run(args: ApplicationArguments?) {
-		val person = Person("Luiz", "Pinheiro")
+		val person = Person("Luiz", "Geraldo")
+
+//		Thread.sleep(5000)
 
 		personProducerImpl.persist("12345", person)
 	}
